@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @SpringBootApplication
+@Controller
+@EnableAutoConfiguration
 public class Application {
 
-    @RequestMapping("/")
+    @RequestMapping("/hello")
     @ResponseBody
     String home() {
         return "Hello World!";
@@ -20,3 +22,5 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 }
+
+
