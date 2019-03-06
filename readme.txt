@@ -1,1 +1,2 @@
-this is my github project of springboot 2017
+#Aynsc
+This is my github project of springboot aynsc annotation coding
