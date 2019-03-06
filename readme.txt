@@ -1,2 +1,2 @@
 #Aynsc
-This is my github project of springboot aynsc annotation coding
+This is my github project of springboot async annotation coding
