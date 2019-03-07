@@ -1,5 +1,5 @@
 #Aynsc
-This is my github project of springboot async annotation coding & Spring EventSource Coing
+This is my github project of springboot async annotation coding & Spring EventSource Coding way
 
 Quick  Start
 
