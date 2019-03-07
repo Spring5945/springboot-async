@@ -2,6 +2,8 @@ package com.zhengyu.controller;
 
 import com.zhengyu.infrastructure.User;
 import com.zhengyu.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import java.util.concurrent.Future;
 public class MyRestController {
     @Autowired
     UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger("MyRestController");
 
     @RequestMapping(value = "/query/{userId}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long userId) {
@@ -26,7 +29,15 @@ public class MyRestController {
     public User saveUser(@PathVariable Long userId) {
         User edison = User.UserBuilder.anUser().withUserId(userId).withName("edison").withAge(25).build();
         userService.saveUser(edison);
-        System.out.println("controller:saveUser:finish");
+        logger.info("controller:saveUser:finish");
+        return edison;
+    }
+
+    @RequestMapping(value = "/saveAsync/{userId}", method = RequestMethod.GET)
+    public User saveUserAsync(@PathVariable Long userId) {
+        User edison = User.UserBuilder.anUser().withUserId(userId).withName("edison").withAge(25).build();
+        userService.saveUserAsync(edison);
+        logger.info("controller:saveUserAsync:finish");
         return edison;
     }
 
@@ -36,11 +47,11 @@ public class MyRestController {
         User user = null;
         try {
             user = userFuture.get();
-            System.out.println("controller:getUserInfo:finish");
+            logger.info("controller:getUserInfo:finish");
         } catch (InterruptedException e) {
-            System.out.println("controller:getUserInfo:InterruptedException " + e);
+            logger.error("controller:getUserInfo:InterruptedException " + e);
         } catch (ExecutionException e) {
-            System.out.println("controller:getUserInfo:ExecutionException " + e);
+            logger.error("controller:getUserInfo:ExecutionException " + e);
         }
         return user;
     }
