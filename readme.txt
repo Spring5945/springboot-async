@@ -1,5 +1,5 @@
 #Aynsc
-This is my github project of springboot async annotation coding
+This is my github project of springboot async annotation coding & Spring EventSource Coing
 
 Quick  Start
 
@@ -74,5 +74,75 @@ public class AsyncConfig implements AsyncConfigurer {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new MyAsyncUncaughtExceptionHandler();
+    }
+}
+
+
+Event Source：
+
+@Component
+public class EventPublisher implements ApplicationEventPublisherAware {
+    private static final Logger logger = LoggerFactory.getLogger("EventPublisher");
+    public ApplicationEventPublisher publisher;
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.publisher = applicationEventPublisher;
+    }
+
+    public void publish(ApplicationEvent event) {
+        logger.info("publish event:" + event.toString());
+        publisher.publishEvent(event);
+    }
+}
+
+@Component
+public class UserEventListener implements ApplicationListener<UserEvent> {
+    private static final Logger logger = LoggerFactory.getLogger("UserEventListener");
+
+    @Override
+    @Async("myCacheThreadPool")
+    public void onApplicationEvent(UserEvent userEvent) {
+        logger.info("------------ApplicationListener监听方式处理事件：{}", userEvent.getMsg());
+        try {
+            Thread.sleep(5 * 1000L);
+            logger.info("ApplicationListener监听方式事件处理完成,新增用户一条");
+        } catch (InterruptedException e) {
+        }
+    }
+}
+
+
+@Component
+public class UserEventHandler {
+    private static final Logger logger = LoggerFactory.getLogger("UserEventHandler");
+
+    @EventListener
+    @Async("myCacheThreadPool")
+    public void handleEvent(UserEvent event) {
+        logger.info("------------EventListener监听方式处理事件：{}", event.getMsg());
+        try {
+            Thread.sleep(5 * 1000L);
+            logger.info("EventListener监听方式事件处理完成,新增用户一条");
+        } catch (InterruptedException e) {
+        }
+    }
+
+}
+
+public class UserEvent extends ApplicationEvent {
+    private String msg;
+
+    public UserEvent(Object source, String msg) {
+        super(source);
+        this.msg = msg;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }
